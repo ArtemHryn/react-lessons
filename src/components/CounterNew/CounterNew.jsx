@@ -1,26 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import styles from './CounterNew.module.css';
 
-export function CounterNew() {
-  const [counterA, setCounterA] = useState(0);
-  const [counterB, setCounterB] = useState(0);
+function countReducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return state + action.payload;
+    case 'decrement':
+      return state - action.payload;
+    default:
+      throw new Error(`Unsupported action type ${action.type}`)
+  }
+}
 
+export function CounterNew() {
+  const [counterB, setCounterB] = useState(0);
+  const [count, dispatch] = useReducer(countReducer, 0);
   useEffect(() => {
-    
-    const totalClicks = counterA + counterB;
+    const totalClicks = count + counterB;
     console.log(totalClicks);
-    // document.title = `Clicked ${totalClicks}`;
-  }, [counterA, counterB]);
+  }, [count, counterB]);
   return (
     <>
       <button
         className={styles.btn}
         type="button"
-        onClick={() => setCounterA(state => state + 1)}
+        onClick={() => dispatch({ type: 'increment', payload: 1 })}
       >
-        Кликнули counterA {counterA} раз
+        Кликнули count {count} раз
       </button>
-
+      <button
+        className={styles.btn}
+        type="button"
+        onClick={() => dispatch({ type: 'decrement', payload: 1 })}
+      >
+        decrease
+      </button>
       <button
         className={styles.btn}
         type="button"
