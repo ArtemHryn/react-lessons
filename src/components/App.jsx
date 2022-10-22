@@ -1,59 +1,42 @@
-import { Component } from 'react';
-// import { ToastContainer } from 'react-toastify';
-import { CounterNew } from './CounterNew/CounterNew';
-// import { PokemonForm } from './Pokemon/PokemonForm';
-// import { PokemonInfo } from './Pokemon/PokemonInfo';
-// import { NewClock } from './Clock';
-// import { ColorPicker } from './ColorPicker';
-// import { SignupForm } from './SignUp/SignUp';
-// import { TranslateApp } from './TranslateApp/TranslateApp';
+import { lazy } from 'react';
+import { GlobalStyle } from './GlobalStyle';
+import { Toaster } from 'react-hot-toast';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { Layout } from './Layout';
+// import { Sales } from 'pages/Sales';
+import { Invoices } from './Invoices';
+import { InvoiceDetails } from './InvoiceDetails';
+import { NotFound } from './NotFound';
+import { Customers } from 'pages/Customers';
+import { CustomerDetails } from 'pages/CustomerDetails';
 
-// const colorPickerOptions = [
-//   { label: 'red', color: '#F44336' },
-//   { label: 'green', color: '#4CAF50' },
-//   { label: 'blue', color: '#2196F3' },
-//   { label: 'grey', color: '#607D8B' },
-//   { label: 'pink', color: '#E91E63' },
-//   { label: 'indigo', color: '#3F51B5' },
-// ];
+const Sales = lazy(() => import('../pages/Sales'))
 
-export class App extends Component {
-  state = {
-    pokemonName: '',
-  };
-
-  onSearchSubmit = pokemonName => {
-    this.setState({ pokemonName });
-  };
-
-  componentDidMount() {
-    this.setState({ loading: true });
-    try {
-      setTimeout(async () => {
-        this.setState({ loading: false });
-      }, 2000);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  render() {
-    return (
-      <>
-        <CounterNew />
-        {/* <PokemonForm onFormSubmit={this.onSearchSubmit} />
-        <PokemonInfo pokemonName={this.state.pokemonName} />
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          draggable
-        /> */}
-        {/* <TranslateApp /> */}
-      </>
-    );
-  }
-}
+export const App = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {/* <Route index element={<div>Welcome to the Candy Shop!</div>} /> */}
+          <Route index element={<Navigate to="dashboard" />} />
+          <Route path="dashboard" element={<div>Dashboard</div>}></Route>
+          <Route path="sales" element={<Sales />}>
+            <Route index element={<div>Sales index Route</div>} />
+            <Route path="analytics" element={<div>Analytics</div>}></Route>
+            <Route path="invoices" element={<Invoices />}>
+              <Route path=":invoiceId" element={<InvoiceDetails />} />
+            </Route>
+            <Route path="deposits" element={<div>Deposits</div>}></Route>
+          </Route>
+          <Route path="reports" element={<div>Reports</div>}></Route>
+          <Route path="feedback" element={<div>Feedback</div>}></Route>
+          <Route path="customers" element={<Customers />}></Route>
+          <Route path="customers/:customerId" element={<CustomerDetails/>}></Route>
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+      <GlobalStyle />
+      <Toaster position="top-right" reverseOrder={false} />
+    </>
+  );
+};
